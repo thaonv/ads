@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ads-cp-prod
+  labels:
+    app: ads-cp-prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ads-cp-prod
+  template:
+    metadata:
+      labels:
+        app: ads-cp-prod
+    spec:
+      containers:
+      - name: ads-cp-prod
+        image: adsplayhubdocker.me/ads_cp_prod:latest
+        env:
+        - name: redeploy
+          value: 'triggerdeploy'
+        volumeMounts:
+            #- mountPath: /src/config/webpack/config.json
+            #  name: config
+            #  subPath: config.json
+            - mountPath: /etc/localtime
+              name: timezone
+      volumes:
+        #- name: config
+        #  configMap:
+        #     name: cp-config
+        #     items:
+        #      - key: config.json
+        #        path: config.json
+        - name: timezone
+          hostPath:
+             path: /usr/share/zoneinfo/Asia/Ho_Chi_Minh
+      imagePullSecrets:
+      - name: adsplay
+      #nodeSelector:
+      #  kubernetes.io/hostname: ps-133-208
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ads-cp-prod
+spec:
+  selector:
+    app: ads-cp-prod
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 3000
+    nodePort: 30505
+  clusterIP: 10.100.30.30
+  type: NodePort

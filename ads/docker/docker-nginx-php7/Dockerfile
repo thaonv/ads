@@ -67,6 +67,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 # Nginx & PHP & Supervisor configuration
 COPY conf/nginx/vhost.conf /etc/nginx/sites-available/default
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY conf/nginx/api.conf /etc/nginx/conf.d
 #COPY conf/php70/php.ini /etc/php/7.0/fpm/php.ini
 #COPY conf/php70/cli.php.ini /etc/php/7.0/cli/php.ini
 #COPY conf/php70/php-fpm.conf /etc/php/7.0/fpm/php-fpm.conf
@@ -76,6 +77,7 @@ COPY conf/supervisor/supervisord.conf /etc/supervisord.conf
 # Forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
+RUN mkdir -p /var/log/nginx/kube/api
 
 # Add php test file
 COPY ./info.php /src/public/index.php
