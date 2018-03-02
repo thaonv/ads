@@ -3,8 +3,7 @@ FROM adsplayhubdocker.me/ads_php71
 WORKDIR /src
 
 COPY . .
-RUN cp .env.production .env && \
-composer update && \
+RUN composer update && \
 php artisan migrate && \
 chmod -R 777 storage && \
 chmod -R 777 vendor && \

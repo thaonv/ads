@@ -27,16 +27,22 @@ spec:
             - mountPath: /etc/localtime
               name: timezone
               #subPath: localtime
+            - mountPath: /var/log/nginx/kube/api
+              name: log
       volumes:
         - name: env
           configMap:
              name: a-env
              items:
-              - key: .env.production
+              - key: .env
                 path: .env
         - name: timezone
           hostPath:
              path: /usr/share/zoneinfo/Asia/Ho_Chi_Minh
+        - name: log
+          hostPath:
+             path: /var/log/kube/ads-a-prod
+             type: Directory
       imagePullSecrets:
       - name: adsplay
 #      nodeSelector:
@@ -52,7 +58,7 @@ spec:
   ports:
   - protocol: TCP
     port: 8001
-    targetPort: 80
+    targetPort: 8080
     nodePort: 30506
   clusterIP: 10.100.30.31
   type: NodePort
